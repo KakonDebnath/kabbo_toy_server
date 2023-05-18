@@ -36,8 +36,38 @@ async function run() {
         })
         // get my toys
         app.get("/myToys", async (req, res) => {
-            const query = {sellerEmail: req.query.email};
+            const query = { sellerEmail: req.query.email };
             const result = await toysCollection.find(query).toArray();
+            res.send(result);
+        })
+
+        // get data for update
+        app.get("/update/:id", async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) }
+            const result = await toysCollection.findOne(query);
+            res.send(result);
+        })
+
+        // update route with id
+        app.put("/update/:id", async (req, res) => {
+            const id = req.params.id;
+            const updatedInfo = req.body;
+            const filter = { _id: new ObjectId(id) };
+            const options = { upsert: true };
+            const updateDoc = {
+                $set: {
+                    toyName: updatedInfo.toyName,
+                    toyPhoto: updatedInfo.toyPhoto,
+                    toyPrice: updatedInfo.toyPrice,
+                    toyRating: updatedInfo.toyRating,
+                    toyQuantity: updatedInfo.toyQuantity,
+                    toyCategory: updatedInfo.toyCategory,
+                    toyDescription: updatedInfo.toyDescription,
+                },
+            }
+            console.log(filter, options, updateDoc);
+            const result = await toysCollection.updateOne(filter, updateDoc,options);
             res.send(result);
         })
 
@@ -49,11 +79,12 @@ async function run() {
             res.send(result)
         })
 
+
         // delete a toy
 
         app.delete("/delete/:id", async (req, res) => {
             const id = req.params.id;
-            const query = {_id: new ObjectId(id)};
+            const query = { _id: new ObjectId(id) };
             const result = await toysCollection.deleteOne(query);
             res.send(result);
         });
