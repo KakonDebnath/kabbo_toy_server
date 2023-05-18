@@ -56,6 +56,13 @@ async function run() {
             res.send(result);
         })
 
+        // get data for categories section
+        app.get('/allToy/category/:text', async (req, res) => {
+            const text = req.params.text;
+            const query = {toyCategory : text}
+            const result = await toysCollection.find(query).toArray();
+            res.send(result);
+        })
         // update route with id
         app.put("/update/:id", async (req, res) => {
             const id = req.params.id;
