@@ -26,9 +26,23 @@ async function run() {
             res.send("Kabbo toys is running")
         })
         // Connect the client to the server	(optional starting in v4.7)
-        await client.connect();
+        client.connect();
         const toysCollection = await client.db("toyDb").collection("allToys");
 
+        // get All toys
+
+        app.get("/allToys", async (req, res) => {
+            const result = await toysCollection.find().toArray();
+            res.send(result);
+        })
+
+
+        // insert toy
+        app.post("/addToy", async (req, res) => {
+            const toyInfo = req.body;
+            const result = await toysCollection.insertOne(toyInfo);
+            res.send(result)
+        })
 
 
 
@@ -51,24 +65,6 @@ async function run() {
     }
 }
 run().catch(console.dir);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 app.listen(port, () => {
