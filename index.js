@@ -28,6 +28,7 @@ async function run() {
         // Connect the client to the server	(optional starting in v4.7)
         client.connect();
         const toysCollection = await client.db("toyDb").collection("allToys");
+        const imgCollection = await client.db("toyDb").collection("toyImg");
 
         // get All toys
         app.get("/allToys", async (req, res) => {
@@ -63,6 +64,13 @@ async function run() {
             const result = await toysCollection.find(query).toArray();
             res.send(result);
         })
+
+        // get all img
+        app.get("/allImg", async (req, res) => {
+            const result = await imgCollection.find().toArray();
+            res.send(result);
+        })
+
         // update route with id
         app.put("/update/:id", async (req, res) => {
             const id = req.params.id;
@@ -80,7 +88,6 @@ async function run() {
                     toyDescription: updatedInfo.toyDescription,
                 },
             }
-            console.log(filter, options, updateDoc);
             const result = await toysCollection.updateOne(filter, updateDoc,options);
             res.send(result);
         })
